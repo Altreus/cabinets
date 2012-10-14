@@ -1,0 +1,141 @@
+<?xml version="1.0" ?> 
+<project name="Cabinets">
+	
+	<property file="build.properties" />
+	
+    <target name="clean">
+        <!--
+		<delete file="${dir.mcp}/src/minecraft/mod_cabinets.info" />
+        <delete file="${dir.mcp}/src/minecraft/net/minecraft/src/mod_cabinets.java" />
+        -->
+        <delete dir="${dir.mcp}/src/minecraft/altreus/mods/cabinets" />
+        <delete dir="${dir.mcp}/src/common/altreus/mods/cabinets" />
+	</target>
+
+<!--
+	<target name="integrate-nei">
+		<copy todir="${dir.mcp}/src/minecraft" overwrite="true">
+			<fileset dir="${dir.development}/source/CodeChickenCore/Client/" />
+			<fileset dir="${dir.development}/source/CodeChickenCore/Common/" />
+		</copy>
+		<copy todir="${dir.mcp}/src/minecraft_server" overwrite="true">
+			<fileset dir="${dir.development}/source/CodeChickenCore/Server/" />
+			<fileset dir="${dir.development}/source/CodeChickenCore/Common/" />
+		</copy>
+		<copy todir="${dir.mcp}/src/minecraft" overwrite="true">
+			<fileset dir="${dir.development}/source/NEI/Client/" />
+			<fileset dir="${dir.development}/source/NEI/Common/" />
+		</copy>
+		<copy todir="${dir.mcp}/src/minecraft_server" overwrite="true">
+			<fileset dir="${dir.development}/source/NEI/Server/" />
+			<fileset dir="${dir.development}/source/NEI/Common/" />
+		</copy>
+	</target>
+-->
+
+	<target name="build">
+        <antcall target="clean" />
+
+        <copy todir="${dir.mcp}/src/minecraft">
+            <fileset dir="${dir.development}/src/minecraft/" />
+		</copy>
+		<copy todir="${dir.mcp}/src/common">
+            <fileset dir="${dir.development}/src/common/" />
+		</copy>
+        <!--
+		<copy todir="${dir.mcp}/src/minecraft_server">
+            <fileset dir="${dir.development}/minecraft_server/" />
+            </copy>
+        -->
+	</target>
+	
+	<target name="recompile">
+        <antcall target="build" />
+        
+		<exec dir="${dir.mcp}" executable="cmd" os="Windows 7">
+			<arg line="/c recompile.bat" />
+		</exec>
+		<exec dir="${dir.mcp}" executable="bash" os="Linux">
+			<arg line="recompile.sh" />
+		</exec>
+	</target>
+	
+	<target name="reobfuscate">
+        <antcall target="recompile" />		
+
+		<exec dir="${dir.mcp}" executable="cmd" os="Windows 7">
+			<arg line="/c reobfuscate.bat" />
+		</exec>
+		<exec dir="${dir.mcp}" executable="bash" os="Linux">
+			<arg line="reobfuscate.sh" />
+		</exec>
+	</target>
+	
+	<target name="release-beta">
+			<!-- Prep for the release -->
+			<antcall target="clean" />
+			<antcall target="build" />
+			<antcall target="recompile" />		
+			<antcall target="reobfuscate" />
+			
+			<!-- Update the mod_*.info file for release -->
+            <!--
+			<copy file="${dir.development}/source/Equivalent-Exchange-3/ee3_common/mod_EE3.info" todir="${dir.development}/releases/" />
+			<move file="${dir.development}/releases/mod_EE3.info" tofile="${dir.development}/releases/mcmod.info" />
+            -->
+			<!-- Build the jar -->
+			<jar destfile="${dir.development}/releases/cabinets-client-v${release.mod.version}.jar">
+                <!--
+                <fileset dir="${dir.development}/releases/"	includes="mcmod.info" />
+                -->
+				<fileset dir="${dir.mcp}/reobf/minecraft" />
+                <!--
+                <fileset dir="${dir.development}/source/Equivalent-Exchange-3/resources" />
+                -->
+			</jar>
+			<jar destfile="${dir.development}/releases/cabinets-server-v${release.mod.version}.jar" basedir="${dir.mcp}/reobf/minecraft_server" />
+		
+			<!-- Put a copy in my Beta DB share -->
+            <!--
+			<mkdir dir="${dir.beta}/${release.minecraft.version}/${release.mod.version}" />
+			<move file="${dir.development}/releases/ee3-client-v${release.mod.version}.jar" todir="${dir.beta}/${release.minecraft.version}/${release.mod.version}" />
+			<move file="${dir.development}/releases/ee3-server-v${release.mod.version}.jar" todir="${dir.beta}/${release.minecraft.version}/${release.mod.version}" />
+            -->
+			<!-- Clean up the MCP source now that we are done -->
+			<antcall target="clean" />
+		</target>
+	
+	<target name="release-final">
+		<!-- Prep for the release -->
+		<antcall target="clean" />
+		<antcall target="build" />
+		<antcall target="recompile" />		
+		<antcall target="reobfuscate" />
+		
+		<!-- Update the mod_*.info file for release -->
+		<copy file="${dir.development}/source/Equivalent-Exchange-3/ee3_common/mod_EE3.info" todir="${dir.development}/releases/" />
+		<move file="${dir.development}/releases/mod_EE3.info" tofile="${dir.development}/releases/mcmod.info" />
+		
+		<!-- Build the jar -->
+		<jar destfile="${dir.development}/releases/ee3-client-v${release.mod.version}.jar">
+			<fileset dir="${dir.development}/releases/"	includes="mcmod.info" />
+			<fileset dir="${dir.development}/reobf/minecraft" />
+			<fileset dir="${dir.development}/source/Equivalent-Exchange-3/resources" />
+		</jar>
+		<jar destfile="${dir.development}/releases/ee3-server-v${release.mod.version}.jar" basedir="${dir.development}/reobf/minecraft_server" />
+		
+		<!-- Put a copy in Sengir's DB share -->
+		<mkdir dir="${dir.share}/${release.minecraft.version}/${release.mod.version}" />
+		<copy file="${dir.development}/releases/ee3-client-v${release.mod.version}.jar" todir="${dir.share}/${release.minecraft.version}/${release.mod.version}" />
+		<copy file="${dir.development}/releases/ee3-server-v${release.mod.version}.jar" todir="${dir.share}/${release.minecraft.version}/${release.mod.version}" />
+		
+		<!-- Put a copy in my public DB share -->
+		<mkdir dir="${dir.release}/${release.minecraft.version}/${release.mod.version}" />
+		<copy file="${dir.development}/releases/ee3-client-v${release.mod.version}.jar" todir="${dir.release}/${release.minecraft.version}/${release.mod.version}" />
+		<copy file="${dir.development}/releases/ee3-server-v${release.mod.version}.jar" todir="${dir.release}/${release.minecraft.version}/${release.mod.version}" />
+		
+		<!-- Clean up the MCP source now that we are done -->
+		<antcall target="clean" />
+	</target>
+	
+</project>
