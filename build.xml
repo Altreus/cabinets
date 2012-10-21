@@ -12,6 +12,15 @@
         <delete dir="${dir.mcp}/src/common/altreus/mods/cabinets" />
 	</target>
 
+    <target name="rev-sync">
+        <copy todir="${dir.development}/src/minecraft/altreus">
+            <fileset dir="${dir.mcp}/src/minecraft/altreus/" />
+		</copy>
+		<copy todir="${dir.development}/src/common/altreus">
+            <fileset dir="${dir.mcp}/src/common/altreus/" />
+		</copy>
+    </target>
+
 <!--
 	<target name="integrate-nei">
 		<copy todir="${dir.mcp}/src/minecraft" overwrite="true">
