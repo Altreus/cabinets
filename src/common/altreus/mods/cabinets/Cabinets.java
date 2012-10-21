@@ -1,9 +1,11 @@
 package altreus.mods.cabinets;
 
 import altreus.mods.cabinets.block.BlockCabinet;
+import altreus.mods.cabinets.client.render.RenderCabinet;
 
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -65,8 +67,10 @@ public class Cabinets {
         );
 
         NetworkRegistry.instance().registerGuiHandler(this, proxy);
+        
+        RenderCabinet.renderId = RenderingRegistry.getNextAvailableRenderId();
         proxy.initTileEntities();
-
+        proxy.initRenderingAndTextures();
 	}
 	
 	@PostInit
