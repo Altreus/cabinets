@@ -6,6 +6,9 @@ import altreus.mods.cabinets.Cabinets;
 import altreus.mods.cabinets.tile.TileEntityCabinet;
 
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import net.minecraft.src.*;
 import net.minecraftforge.client.ForgeHooksClient;
 

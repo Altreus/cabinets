@@ -1,11 +1,15 @@
 package altreus.mods.cabinets;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import altreus.mods.cabinets.block.BlockCabinet;
 import altreus.mods.cabinets.client.render.RenderCabinet;
 
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -45,9 +49,16 @@ public class Cabinets {
 	@SidedProxy(clientSide="altreus.mods.cabinets.client.ClientProxy", serverSide="altreus.mods.cabinets.CommonProxy")
 	public static CommonProxy proxy;
 	
+	public static Logger logger;
+	
+	public static void log(Level loglevel, String message){
+		logger.log(loglevel,message);
+	}
+	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
-		// Stub Method
+		logger = Logger.getLogger("Cabinets");
+		logger.setParent(FMLLog.getLogger());
 	}
 	
 	@Init
