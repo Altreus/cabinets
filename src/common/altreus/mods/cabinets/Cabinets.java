@@ -65,6 +65,7 @@ public class Cabinets {
         );
 
         NetworkRegistry.instance().registerGuiHandler(this, proxy);
+        proxy.initTileEntities();
 
 	}
 	

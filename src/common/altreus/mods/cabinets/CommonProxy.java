@@ -5,6 +5,7 @@ import altreus.mods.cabinets.container.ContainerCabinet;
 import altreus.mods.cabinets.tile.TileEntityCabinet;
 
 import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.TileEntity;
@@ -39,4 +40,8 @@ public class CommonProxy implements IGuiHandler {
         }
         return null;
     }
+
+	public void initTileEntities() {
+		GameRegistry.registerTileEntity(TileEntityCabinet.class, "tileEntityCabinet");
+	}
 }
